@@ -31,7 +31,13 @@ function createQuote(obj) {
 
   likesButton.addEventListener("click", likesButtonClick);
 
-  blockQuote.append(quoteParagraph, authorFooter, breakTag, likesButton, deleteButton);
+  blockQuote.append(
+    quoteParagraph,
+    authorFooter,
+    breakTag,
+    likesButton,
+    deleteButton
+  );
   quoteCardLi.append(blockQuote);
 
   console.log("quoteCardLi: ", quoteCardLi);
@@ -40,12 +46,15 @@ function createQuote(obj) {
 }
 
 function populateQuotes() {
-  fetch("http://localhost:3000/quotes?_embed=likes", {
-    header: {
-      "Content-Type": "application/json"
-    },
-    method: "GET"
-  })
+  fetch(
+    "https://javascript-quotes-jsonserver.herokuapp.com/quotes?_embed = likes",
+    {
+      header: {
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+    }
+  )
     .then((response) => response.json())
     .then((objArray) => {
       endingIdValue = objArray.length;
@@ -67,9 +76,9 @@ function likesButtonClick(e) {
   let existingQuoteId = e.target.parentElement.id;
 
   // Grab the total amount of elements present so you can get the last id value accordingly:
-  fetch("http://localhost:3000/likes", {
+  fetch("https://javascript-quotes-jsonserver.herokuapp.com/likes", {
     header: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     method: "GET",
   })
@@ -83,19 +92,18 @@ function likesButtonClick(e) {
     })
     .then(
       // Make fetch() call with 'POST' method for 'http://localhost:3000/likes' to update 'like' count
-      fetch("http://localhost:3000/likes", {
+      fetch("https://javascript-quotes-jsonserver.herokuapp.com/likes", {
         header: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         method: "POST",
         body: JSON.stringify({
           id: endingQuoteIdValue,
-          quoteId: existingQuoteId
-        })
+          quoteId: existingQuoteId,
+        }),
+      }).catch((error) => {
+        console.log("error: ", error.message);
       })
-        .catch((error) => {
-          console.log("error: ", error.message);
-        })
     );
 }
 
@@ -142,18 +150,17 @@ function newQuoteFormSubmit(e) {
 
   createQuote(newQuoteObj);
 
-  fetch("http://localhost:3000/quotes", {
+  fetch("https://javascript-quotes-jsonserver.herokuapp.com/quotes", {
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     method: "POST",
     body: JSON.stringify({
       id: newQuoteObj.id,
       quote: newQuoteObj.quote,
-      author: newQuoteObj.author
-    })
-  })
-    .catch((error) => {
-      console.log("error: ", error.message);
-    });
+      author: newQuoteObj.author,
+    }),
+  }).catch((error) => {
+    console.log("error: ", error.message);
+  });
 }
